@@ -22,6 +22,7 @@ type Link {
   createdAt: DateTime!
   description: String!
   url: String!
+  postedBy: User
 }
 
 type LinkConnection {
@@ -31,6 +32,18 @@ type LinkConnection {
 }
 
 input LinkCreateInput {
+  id: ID
+  description: String!
+  url: String!
+  postedBy: UserCreateOneWithoutLinksInput
+}
+
+input LinkCreateManyWithoutPostedByInput {
+  create: [LinkCreateWithoutPostedByInput!]
+  connect: [LinkWhereUniqueInput!]
+}
+
+input LinkCreateWithoutPostedByInput {
   id: ID
   description: String!
   url: String!
@@ -59,6 +72,62 @@ type LinkPreviousValues {
   url: String!
 }
 
+input LinkScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  description: String
+  description_not: String
+  description_in: [String!]
+  description_not_in: [String!]
+  description_lt: String
+  description_lte: String
+  description_gt: String
+  description_gte: String
+  description_contains: String
+  description_not_contains: String
+  description_starts_with: String
+  description_not_starts_with: String
+  description_ends_with: String
+  description_not_ends_with: String
+  url: String
+  url_not: String
+  url_in: [String!]
+  url_not_in: [String!]
+  url_lt: String
+  url_lte: String
+  url_gt: String
+  url_gte: String
+  url_contains: String
+  url_not_contains: String
+  url_starts_with: String
+  url_not_starts_with: String
+  url_ends_with: String
+  url_not_ends_with: String
+  AND: [LinkScalarWhereInput!]
+  OR: [LinkScalarWhereInput!]
+  NOT: [LinkScalarWhereInput!]
+}
+
 type LinkSubscriptionPayload {
   mutation: MutationType!
   node: Link
@@ -80,11 +149,50 @@ input LinkSubscriptionWhereInput {
 input LinkUpdateInput {
   description: String
   url: String
+  postedBy: UserUpdateOneWithoutLinksInput
+}
+
+input LinkUpdateManyDataInput {
+  description: String
+  url: String
 }
 
 input LinkUpdateManyMutationInput {
   description: String
   url: String
+}
+
+input LinkUpdateManyWithoutPostedByInput {
+  create: [LinkCreateWithoutPostedByInput!]
+  delete: [LinkWhereUniqueInput!]
+  connect: [LinkWhereUniqueInput!]
+  set: [LinkWhereUniqueInput!]
+  disconnect: [LinkWhereUniqueInput!]
+  update: [LinkUpdateWithWhereUniqueWithoutPostedByInput!]
+  upsert: [LinkUpsertWithWhereUniqueWithoutPostedByInput!]
+  deleteMany: [LinkScalarWhereInput!]
+  updateMany: [LinkUpdateManyWithWhereNestedInput!]
+}
+
+input LinkUpdateManyWithWhereNestedInput {
+  where: LinkScalarWhereInput!
+  data: LinkUpdateManyDataInput!
+}
+
+input LinkUpdateWithoutPostedByDataInput {
+  description: String
+  url: String
+}
+
+input LinkUpdateWithWhereUniqueWithoutPostedByInput {
+  where: LinkWhereUniqueInput!
+  data: LinkUpdateWithoutPostedByDataInput!
+}
+
+input LinkUpsertWithWhereUniqueWithoutPostedByInput {
+  where: LinkWhereUniqueInput!
+  update: LinkUpdateWithoutPostedByDataInput!
+  create: LinkCreateWithoutPostedByInput!
 }
 
 input LinkWhereInput {
@@ -138,6 +246,7 @@ input LinkWhereInput {
   url_not_starts_with: String
   url_ends_with: String
   url_not_ends_with: String
+  postedBy: UserWhereInput
   AND: [LinkWhereInput!]
   OR: [LinkWhereInput!]
   NOT: [LinkWhereInput!]
@@ -201,7 +310,9 @@ type User {
   createdAt: DateTime!
   updatedAt: DateTime!
   name: String!
-  gender: String!
+  email: String!
+  password: String!
+  links(where: LinkWhereInput, orderBy: LinkOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Link!]
 }
 
 type UserConnection {
@@ -213,7 +324,21 @@ type UserConnection {
 input UserCreateInput {
   id: ID
   name: String!
-  gender: String!
+  email: String!
+  password: String!
+  links: LinkCreateManyWithoutPostedByInput
+}
+
+input UserCreateOneWithoutLinksInput {
+  create: UserCreateWithoutLinksInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateWithoutLinksInput {
+  id: ID
+  name: String!
+  email: String!
+  password: String!
 }
 
 type UserEdge {
@@ -230,8 +355,10 @@ enum UserOrderByInput {
   updatedAt_DESC
   name_ASC
   name_DESC
-  gender_ASC
-  gender_DESC
+  email_ASC
+  email_DESC
+  password_ASC
+  password_DESC
 }
 
 type UserPreviousValues {
@@ -239,7 +366,8 @@ type UserPreviousValues {
   createdAt: DateTime!
   updatedAt: DateTime!
   name: String!
-  gender: String!
+  email: String!
+  password: String!
 }
 
 type UserSubscriptionPayload {
@@ -262,12 +390,35 @@ input UserSubscriptionWhereInput {
 
 input UserUpdateInput {
   name: String
-  gender: String
+  email: String
+  password: String
+  links: LinkUpdateManyWithoutPostedByInput
 }
 
 input UserUpdateManyMutationInput {
   name: String
-  gender: String
+  email: String
+  password: String
+}
+
+input UserUpdateOneWithoutLinksInput {
+  create: UserCreateWithoutLinksInput
+  update: UserUpdateWithoutLinksDataInput
+  upsert: UserUpsertWithoutLinksInput
+  delete: Boolean
+  disconnect: Boolean
+  connect: UserWhereUniqueInput
+}
+
+input UserUpdateWithoutLinksDataInput {
+  name: String
+  email: String
+  password: String
+}
+
+input UserUpsertWithoutLinksInput {
+  update: UserUpdateWithoutLinksDataInput!
+  create: UserCreateWithoutLinksInput!
 }
 
 input UserWhereInput {
@@ -315,20 +466,37 @@ input UserWhereInput {
   name_not_starts_with: String
   name_ends_with: String
   name_not_ends_with: String
-  gender: String
-  gender_not: String
-  gender_in: [String!]
-  gender_not_in: [String!]
-  gender_lt: String
-  gender_lte: String
-  gender_gt: String
-  gender_gte: String
-  gender_contains: String
-  gender_not_contains: String
-  gender_starts_with: String
-  gender_not_starts_with: String
-  gender_ends_with: String
-  gender_not_ends_with: String
+  email: String
+  email_not: String
+  email_in: [String!]
+  email_not_in: [String!]
+  email_lt: String
+  email_lte: String
+  email_gt: String
+  email_gte: String
+  email_contains: String
+  email_not_contains: String
+  email_starts_with: String
+  email_not_starts_with: String
+  email_ends_with: String
+  email_not_ends_with: String
+  password: String
+  password_not: String
+  password_in: [String!]
+  password_not_in: [String!]
+  password_lt: String
+  password_lte: String
+  password_gt: String
+  password_gte: String
+  password_contains: String
+  password_not_contains: String
+  password_starts_with: String
+  password_not_starts_with: String
+  password_ends_with: String
+  password_not_ends_with: String
+  links_every: LinkWhereInput
+  links_some: LinkWhereInput
+  links_none: LinkWhereInput
   AND: [UserWhereInput!]
   OR: [UserWhereInput!]
   NOT: [UserWhereInput!]
